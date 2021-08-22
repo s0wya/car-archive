@@ -3,8 +3,8 @@ package pl.conmir.cararchive;
 /*
     TODO:
         -registration number DONE
-        -make
-        -model
+        -make - IN PROGRESS
+        -model - DONE
         -production year
  */
 
