@@ -2,6 +2,7 @@ package pl.conmir.cararchive;
 
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
+import pl.conmir.cararchive.originalModificationFile.FileName;
 
 import javax.persistence.Embeddable;
 
@@ -10,24 +11,23 @@ import javax.persistence.Embeddable;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FileName {
+public class ModifiedFileName {
 
     private String value;
 
-    private FileName(String value){
+    private ModifiedFileName(String value){
         if (!isCorrect(value))
             throw new IllegalArgumentException("File name cannot be null!");
 
         this.value = value;
     }
 
-    public static FileName of(String value){
-        return new FileName(value);
+    public static ModifiedFileName of(String value){
+        return new ModifiedFileName(value);
     }
 
     private boolean isCorrect(String value){
         return !StringUtils.isBlank(value)
                 && !StringUtils.containsWhitespace(value);
     }
-
 }

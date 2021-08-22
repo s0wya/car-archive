@@ -1,4 +1,4 @@
-package pl.conmir.cararchive;
+package pl.conmir.cararchive.originalModificationFile;
 
 import lombok.*;
 

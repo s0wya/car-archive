@@ -5,55 +5,52 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import pl.conmir.cararchive.originalModificationFile.FileName;
+import pl.conmir.cararchive.originalModificationFile.FileData;
 
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
-class FileNameTest {
+class ModifiedFileDataTest {
+
 
     @ParameterizedTest
-    @ArgumentsSource(TestDataSet.class)
-    void shouldCreateObject(String argument, boolean expectedResult){
+    @ArgumentsSource(FileDataTest.TestDataSet.class)
+    void shouldCreateObject(byte[] argument, boolean expectedResult){
         if (expectedResult){
             assertThatCode(() ->
-                FileName.of(argument)
+                    ModifiedFileData.of(argument)
             ).doesNotThrowAnyException();
         } else {
             assertThatThrownBy(() ->
-                    FileName.of(argument)
+                    ModifiedFileData.of(argument)
             ).isInstanceOf(IllegalArgumentException.class);
         }
     }
 
+    static class TestDataSet implements ArgumentsProvider {
 
-    static class TestDataSet implements ArgumentsProvider{
-
-        private final static boolean VALID = true;
-        private final static boolean INVALID = false;
+        private static final boolean VALID = true;
+        private static final boolean INVALID = false;
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    caseWith("", INVALID),
-                    caseWith(" ", INVALID),
                     caseWith(null, INVALID),
-                    caseWith("testFilename", VALID),
-                    caseWith("test File name", INVALID),
-                    caseWith("testF  ilename", INVALID)
-                    );
+                    caseWith(new byte[0], INVALID),
+                    caseWith(new byte[]{1, 2, 3, 4}, VALID)
+
+
+            );
         }
 
-        private Arguments caseWith(String argument, boolean expectedResult){
+        private Arguments caseWith(byte[] argument, boolean expectedResult){
             return Arguments.of(
                     argument,
                     expectedResult
             );
-
         }
     }
-
-
 }

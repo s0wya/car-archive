@@ -11,25 +11,26 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
-class FileNameTest {
+class ModifiedFileNameTest {
 
     @ParameterizedTest
-    @ArgumentsSource(TestDataSet.class)
+    @ArgumentsSource(FileNameTest.TestDataSet.class)
     void shouldCreateObject(String argument, boolean expectedResult){
         if (expectedResult){
             assertThatCode(() ->
-                FileName.of(argument)
+                    ModifiedFileName.of(argument)
             ).doesNotThrowAnyException();
         } else {
             assertThatThrownBy(() ->
-                    FileName.of(argument)
+                    ModifiedFileName.of(argument)
             ).isInstanceOf(IllegalArgumentException.class);
         }
     }
 
 
-    static class TestDataSet implements ArgumentsProvider{
+    static class TestDataSet implements ArgumentsProvider {
 
         private final static boolean VALID = true;
         private final static boolean INVALID = false;
@@ -43,7 +44,7 @@ class FileNameTest {
                     caseWith("testFilename", VALID),
                     caseWith("test File name", INVALID),
                     caseWith("testF  ilename", INVALID)
-                    );
+            );
         }
 
         private Arguments caseWith(String argument, boolean expectedResult){
@@ -54,6 +55,5 @@ class FileNameTest {
 
         }
     }
-
 
 }
