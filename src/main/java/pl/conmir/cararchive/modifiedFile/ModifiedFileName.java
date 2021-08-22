@@ -1,8 +1,7 @@
-package pl.conmir.cararchive;
+package pl.conmir.cararchive.modifiedFile;
 
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
-import pl.conmir.cararchive.originalModificationFile.FileName;
 
 import javax.persistence.Embeddable;
 

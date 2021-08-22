@@ -1,4 +1,4 @@
-package pl.conmir.cararchive;
+package pl.conmir.cararchive.car;
 
 /*
     TODO:
@@ -16,6 +16,7 @@ import pl.conmir.cararchive.car.Make;
 import pl.conmir.cararchive.car.Model;
 import pl.conmir.cararchive.car.ProductionYear;
 import pl.conmir.cararchive.car.RegistrationNumber;
+import pl.conmir.cararchive.modifiedFile.ModifiedFile;
 import pl.conmir.cararchive.originalModificationFile.OriginalModificationFile;
 
 import javax.persistence.*;

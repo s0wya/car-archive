@@ -1,15 +1,17 @@
 package pl.conmir.cararchive.originalModificationFile;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import pl.conmir.cararchive.Car;
+import pl.conmir.cararchive.car.Car;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OriginalModificationFile {
 
     @Id
