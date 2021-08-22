@@ -1,8 +1,6 @@
-package pl.conmir.cararchive;
+package pl.conmir.cararchive.car;
 
 import lombok.*;
-import org.apache.commons.lang3.StringUtils;
-import pl.conmir.cararchive.car.Make;
 
 import javax.persistence.Embeddable;
 

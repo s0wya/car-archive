@@ -5,50 +5,46 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import pl.conmir.cararchive.car.ProductionYear;
-
 
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
-class ProductionYearTest {
+class FileDataTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestDataSet.class)
-    void shouldCreateObject(int argument, boolean expectedResult ){
+    void shouldCreateObject(byte[] argument, boolean expectedResult){
         if (expectedResult){
             assertThatCode(() ->
-                    ProductionYear.of(argument)
+                    FileData.of(argument)
             ).doesNotThrowAnyException();
         } else {
             assertThatThrownBy(() ->
-                    ProductionYear.of(argument)
+                    FileData.of(argument)
             ).isInstanceOf(IllegalArgumentException.class);
         }
-
     }
 
+    static class TestDataSet implements ArgumentsProvider{
 
-    static class TestDataSet implements ArgumentsProvider {
-        private final static boolean VALID = true;
-        private final static boolean INVALID = false;
-
+        private static final boolean VALID = true;
+        private static final boolean INVALID = false;
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    caseWith(1, INVALID),
-                    caseWith(12, INVALID),
-                    caseWith(123, INVALID),
-                    caseWith(12345, INVALID),
-                    caseWith(123456, INVALID),
-                    caseWith(1234, VALID)
+                    caseWith(null, INVALID),
+                    caseWith(new byte[0], INVALID),
+                    caseWith(new byte[]{1, 2, 3, 4}, VALID)
+
+
             );
         }
 
-        private Arguments caseWith(int argument, boolean expectedResult){
+        private Arguments caseWith(byte[] argument, boolean expectedResult){
             return Arguments.of(
                     argument,
                     expectedResult
