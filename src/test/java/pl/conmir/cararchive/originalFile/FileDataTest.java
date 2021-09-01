@@ -1,11 +1,11 @@
-package pl.conmir.cararchive;
+package pl.conmir.cararchive.originalFile;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import pl.conmir.cararchive.originalModificationFile.FileData;
+import pl.conmir.cararchive.originalFile.FileData;
 
 import java.util.stream.Stream;
 

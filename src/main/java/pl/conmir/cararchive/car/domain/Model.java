@@ -1,4 +1,4 @@
-package pl.conmir.cararchive.car;
+package pl.conmir.cararchive.car.domain;
 
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
@@ -10,19 +10,19 @@ import javax.persistence.Embeddable;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Make {
+public class Model {
 
     private String value;
 
-    private Make(String value){
+    private Model(String value){
         if (!isCorrect(value))
-            throw new IllegalArgumentException("Make number cannot be blank!");
+            throw new IllegalArgumentException("Model number cannot be blank!");
 
         this.value = value;
     }
 
-    public static Make of(String value){
-        return new Make(value);
+    public static Model of(String value){
+        return new Model(value);
 
     }
 

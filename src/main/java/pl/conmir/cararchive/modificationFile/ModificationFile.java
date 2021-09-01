@@ -1,8 +1,7 @@
-package pl.conmir.cararchive.originalModificationFile;
+package pl.conmir.cararchive.modificationFile;
+
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import pl.conmir.cararchive.car.Car;
 
 import javax.persistence.*;
 
@@ -12,23 +11,20 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class OriginalModificationFile {
+public class ModificationFile {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Embedded
     @AttributeOverride( name = "value", column = @Column(name = "name"))
-    private FileName name;
+    private ModificationFileName name;
 
     private String type;
 
     @Embedded
     @AttributeOverride( name = "value", column = @Column(name = "data"))
-    private FileData data;
+    private ModificationFileData data;
 
-    @OneToOne
-    private Car car;
 }

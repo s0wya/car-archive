@@ -1,4 +1,4 @@
-package pl.conmir.cararchive.car;
+package pl.conmir.cararchive.car.domain;
 
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
@@ -10,25 +10,24 @@ import javax.persistence.Embeddable;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RegistrationNumber {
+public class Make {
 
     private String value;
 
-    private RegistrationNumber(String value){
+    private Make(String value){
         if (!isCorrect(value))
-            throw new IllegalArgumentException("Registration number cannot be blank!");
+            throw new IllegalArgumentException("Make number cannot be blank!");
 
         this.value = value;
     }
 
-    public static RegistrationNumber of(String value){
-        return new RegistrationNumber(value);
+    public static Make of(String value){
+        return new Make(value);
 
     }
 
     private boolean isCorrect(String value){
         return !StringUtils.isBlank(value)
-                && !StringUtils.containsWhitespace(value)
-                && value.length() == 7;
+                && !StringUtils.containsWhitespace(value);
     }
 }

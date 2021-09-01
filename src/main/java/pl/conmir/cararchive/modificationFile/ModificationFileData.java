@@ -1,7 +1,6 @@
-package pl.conmir.cararchive.originalModificationFile;
+package pl.conmir.cararchive.modificationFile;
 
 import lombok.*;
-
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 
@@ -10,25 +9,24 @@ import javax.persistence.Lob;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FileData {
+public class ModificationFileData {
 
     @Lob
     private byte[] value;
 
-    private FileData(byte[] value){
+    private ModificationFileData(byte[] value){
         if (!isCorrect(value))
             throw new IllegalArgumentException("File data cannot be null and empty!");
 
         this.value = value;
     }
 
-    public static FileData of(byte[] value){
-        return new FileData(value);
+    public static ModificationFileData of(byte[] value){
+        return new ModificationFileData(value);
     }
 
     private boolean isCorrect(byte[] value){
         return value != null
                 && value.length > 0;
     }
-
 }

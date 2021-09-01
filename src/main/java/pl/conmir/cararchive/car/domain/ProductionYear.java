@@ -1,4 +1,4 @@
-package pl.conmir.cararchive.car;
+package pl.conmir.cararchive.car.domain;
 
 import lombok.*;
 
