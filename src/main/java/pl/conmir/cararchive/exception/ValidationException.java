@@ -1,4 +1,4 @@
-package pl.conmir.cararchive.car.exception;
+package pl.conmir.cararchive.exception;
 
 
 import lombok.Getter;

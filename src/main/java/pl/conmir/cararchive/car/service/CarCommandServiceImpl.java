@@ -5,10 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.conmir.cararchive.car.CarFactory;
-import pl.conmir.cararchive.car.CarMapper;
 import pl.conmir.cararchive.car.CarRepository;
+import pl.conmir.cararchive.car.Validator;
 import pl.conmir.cararchive.car.domain.*;
 import pl.conmir.cararchive.car.dto.CreateCarDto;
+import pl.conmir.cararchive.car.dto.UpdateCarDto;
 import pl.conmir.cararchive.modificationFile.ModificationFile;
 import pl.conmir.cararchive.modificationFile.ModificationFileData;
 import pl.conmir.cararchive.modificationFile.ModificationFileName;
@@ -25,15 +26,12 @@ public class CarCommandServiceImpl implements CarCommandService {
 
     private final CarRepository repository;
     private final CarFactory carFactory;
+    private final Validator validator;
 
 
     @Override
     public void save(CreateCarDto request) {
-        //TODO -> Add validation to request
-        /*
-            boolean isCorrect = validator.validate(CarRaquest req)
-         */
-//        validator.validate(request); // ValidationException -> 400, errorCode, message
+        validator.validate(request);
 
         var make = Make.of(request.getMake());
         var model = Model.of(request.getModel());
@@ -50,16 +48,24 @@ public class CarCommandServiceImpl implements CarCommandService {
     }
 
     @Override
-    public void update(Long carId, CreateCarDto request) {
-        //TODO -> Add validation to request
+    public void update(Long carId, UpdateCarDto request) {
+
+        //TODO: add validation for update dto
+
         Car car = repository.findById(carId)
                 .orElseThrow(() -> {
                     throw new IllegalArgumentException();
                 });
 
-        //TODO: change to factory
-        Car mappedRequest = CarMapper.fromCreateCarDto(request);
-        car.update(mappedRequest);
+        var make = Make.of(request.getMake());
+        var model = Model.of(request.getModel());
+        var productionYear = ProductionYear.of(request.getYear());
+        var registrationNumber = RegistrationNumber.of(request.getRegistration());
+
+        car.changeMake(make);
+        car.changeModel(model);
+        car.changeRegistration(registrationNumber);
+        car.changeProductionYear(productionYear);
     }
 
     @Override

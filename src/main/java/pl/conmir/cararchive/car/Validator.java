@@ -3,7 +3,7 @@ package pl.conmir.cararchive.car;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.conmir.cararchive.car.dto.CreateCarDto;
-import pl.conmir.cararchive.car.exception.ValidationException;
+import pl.conmir.cararchive.exception.ValidationException;
 
 @Component
 public class Validator {
@@ -41,7 +41,7 @@ public class Validator {
             throw new ValidationException(
                     Error.MAKE_BLANK.getCode(),
                     Error.MAKE_BLANK.getMessage()
-                    );
+            );
 
         if (hasMakeContainWhitespaces(dto.getMake()))
             throw new ValidationException(
@@ -104,7 +104,7 @@ public class Validator {
     }
 
     private boolean hasProductionYearIncorrectFormat(int value){
-        return String.valueOf(value).length() == 4;
+        return String.valueOf(value).length() != 4;
     }
 
     private boolean isRegistrationNumberBlank(String value){
@@ -116,7 +116,7 @@ public class Validator {
     }
 
     private boolean hasRegistrationNumberIncorrectFormat(String value){
-        return value.length() == 7;
+        return value.length() != 7;
     }
 
 

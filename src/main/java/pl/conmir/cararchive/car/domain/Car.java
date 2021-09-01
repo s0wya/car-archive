@@ -53,11 +53,20 @@ public class Car {
     @JoinColumn(name="modifiedFile_id")
     private Set<ModificationFile> modificationFiles;
 
-    public void update(Car request){
-        this.registration = request.registration;
-        this.make = request.make;
-        this.model = request.model;
-        this.year = request.year;
+    public void changeRegistration(RegistrationNumber registrationNumber){
+        this.registration = registrationNumber;
+    }
+
+    public void changeMake(Make make){
+        this.make = make;
+    }
+
+    public void changeModel(Model model){
+        this.model = model;
+    }
+
+    public void changeProductionYear(ProductionYear productionYear){
+        this.year = productionYear;
     }
 
     public void setOriginalModificationFile(OriginalFile file) {

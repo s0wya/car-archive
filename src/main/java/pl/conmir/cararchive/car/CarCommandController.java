@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.conmir.cararchive.car.dto.CreateCarDto;
+import pl.conmir.cararchive.car.dto.UpdateCarDto;
 import pl.conmir.cararchive.car.service.CarCommandService;
 
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class CarCommandController {
     }
 
     @PutMapping("/{id}/")
-    public ResponseEntity<?> save(@PathVariable Long id ,@RequestBody CreateCarDto request) {
+    public ResponseEntity<?> save(@PathVariable Long id ,@RequestBody UpdateCarDto request) {
         carCommandService.update(id, request);
 
         return ResponseEntity.ok().build();
