@@ -10,6 +10,8 @@ import pl.conmir.cararchive.car.Validator;
 import pl.conmir.cararchive.car.domain.*;
 import pl.conmir.cararchive.car.dto.CreateCarDto;
 import pl.conmir.cararchive.car.dto.UpdateCarDto;
+import pl.conmir.cararchive.exception.FileStorageException;
+import pl.conmir.cararchive.exception.ResourseNotFoundException;
 import pl.conmir.cararchive.modificationFile.ModificationFile;
 import pl.conmir.cararchive.modificationFile.ModificationFileData;
 import pl.conmir.cararchive.modificationFile.ModificationFileName;
@@ -54,7 +56,7 @@ public class CarCommandServiceImpl implements CarCommandService {
 
         Car car = repository.findById(carId)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException();
+                    throw new ResourseNotFoundException(404, "File with id:" + carId + "not found");
                 });
 
         var make = Make.of(request.getMake());
@@ -72,7 +74,7 @@ public class CarCommandServiceImpl implements CarCommandService {
     public void setOriginalFile(Long carId, MultipartFile file) {
         var car = repository.findById(carId)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("File with id: " + carId + " not found!");
+                    throw new ResourseNotFoundException(404, "File with id: " + carId + " not found!");
                 });
         var modifiedFile = createOriginalFile(file);
 
@@ -84,17 +86,17 @@ public class CarCommandServiceImpl implements CarCommandService {
     public void removeOriginalModificationFile(Long carId) {
         var car = repository.findById(carId)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Car with id: " + carId + " not found!");
+                    throw new ResourseNotFoundException(404, "Car with id: " + carId + " not found!");
                 });
 
         car.removeOriginalModificationFile();
     }
 
     @Override
-    public void addModifiedFile(Long carId, MultipartFile file) {
+    public void addModificationFile(Long carId, MultipartFile file) {
         var car = repository.findById(carId)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Car with id: " + carId + " not found!");
+                    throw new ResourseNotFoundException(404, "Car with id: " + carId + " not found!");
                 });
 
         var modifiedFile = createModifiedFile(file);
@@ -103,15 +105,15 @@ public class CarCommandServiceImpl implements CarCommandService {
     }
 
     @Override
-    public void removeModifiedFile(Long carId, Long fileId) {
+    public void removeModificationFile(Long carId, Long fileId) {
         var car = repository.findById(carId)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Car with carId: " + carId + " not found!");
+                    throw new ResourseNotFoundException(404, "Car with id: " + carId + " not found!");
                 });
 
         var fileToRemove = repository.findByModifiedFileId(carId, fileId)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("File with carId: " + fileId + " not found!");
+                    throw new ResourseNotFoundException(404, "File with id: " + fileId + " not found!");
                 });
 
 
@@ -126,7 +128,7 @@ public class CarCommandServiceImpl implements CarCommandService {
                     .data(FileData.of(file.getBytes()))
                     .build();
         } catch (IOException ex) {
-            throw new IllegalStateException("Could not store file. " + ex);
+            throw new FileStorageException(500, "Could not store file. " + ex);
         }
     }
 
@@ -138,7 +140,7 @@ public class CarCommandServiceImpl implements CarCommandService {
                     .data(ModificationFileData.of(file.getBytes()))
                     .build();
         } catch (IOException ex) {
-            throw new IllegalStateException("Could not store file. " + ex);
+            throw new FileStorageException(500, "Could not store file. " + ex);
         }
     }
 }

@@ -41,7 +41,7 @@ public class CarCommandController {
     public ResponseEntity uploadFile(@PathVariable Long carId, @RequestParam("file") MultipartFile file) {
 
 
-        carCommandService.addModifiedFile(carId, file);
+        carCommandService.addModificationFile(carId, file);
             return ResponseEntity.status(HttpStatus.OK).build();
 
     }

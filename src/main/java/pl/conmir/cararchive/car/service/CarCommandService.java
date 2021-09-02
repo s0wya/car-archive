@@ -15,7 +15,7 @@ public interface CarCommandService {
     void setOriginalFile(Long carId, MultipartFile file);
     void removeOriginalModificationFile(Long carId);
 
-    void addModifiedFile(Long carIdd, MultipartFile file);
-    void removeModifiedFile(Long carId, Long fileId);
+    void addModificationFile(Long carIdd, MultipartFile file);
+    void removeModificationFile(Long carId, Long fileId);
 
 }

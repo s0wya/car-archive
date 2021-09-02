@@ -7,11 +7,11 @@ import pl.conmir.cararchive.car.CarMapper;
 import pl.conmir.cararchive.car.CarRepository;
 import pl.conmir.cararchive.car.CarResponse;
 import pl.conmir.cararchive.car.domain.Car;
-import pl.conmir.cararchive.modificationFile.ModificationFile;
+import pl.conmir.cararchive.exception.ResourseNotFoundException;
 import pl.conmir.cararchive.modificationFile.ModificationFileMapper;
-import pl.conmir.cararchive.modificationFile.ModificationFileResponse;
+import pl.conmir.cararchive.modificationFile.dto.ModificationFileResponse;
 import pl.conmir.cararchive.originalFile.OriginalFileMapper;
-import pl.conmir.cararchive.originalFile.OriginalFileResponse;
+import pl.conmir.cararchive.originalFile.dto.OriginalFileResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class CarQueryServiceImpl implements CarQueryService {
         return repository.findById(carId)
                 .map(CarMapper::toCarResponse)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Car with id: " + carId + " cannot be found!");
+                    throw new ResourseNotFoundException(404, "Car with id: " + carId + " cannot be found!");
                 });
     }
 
@@ -34,7 +34,7 @@ public class CarQueryServiceImpl implements CarQueryService {
                 .map(Car::getOriginalFile)
                 .map(OriginalFileMapper::toOriginalFileResponse)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("There is no file for car:" + carId);
+                    throw new ResourseNotFoundException(404, "There is no file for car:" + carId);
                 });
     }
 
@@ -43,7 +43,7 @@ public class CarQueryServiceImpl implements CarQueryService {
         return repository.findByModifiedFileId(carId, fileId)
                 .map(ModificationFileMapper::toModificationFileResponse)
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("There is no file");
+                    throw new ResourseNotFoundException(404, "There is no file");
                 });
     }
 

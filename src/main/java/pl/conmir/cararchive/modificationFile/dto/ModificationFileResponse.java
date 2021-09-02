@@ -1,4 +1,4 @@
-package pl.conmir.cararchive.modificationFile;
+package pl.conmir.cararchive.modificationFile.dto;
 
 
 import lombok.AccessLevel;

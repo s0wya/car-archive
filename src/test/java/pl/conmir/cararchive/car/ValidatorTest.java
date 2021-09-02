@@ -1,6 +1,7 @@
 package pl.conmir.cararchive.car;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,7 +24,10 @@ class ValidatorTest {
         validator = new Validator();
     }
 
-    @ParameterizedTest
+
+
+    @DisplayName("Should throw exception for incorrect model in dto")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: {1}")
     @ArgumentsSource(TestModelDataSet.class)
     void shouldThrowExceptionForModel(String argument, boolean expectedResult){
         if (expectedResult){
@@ -39,7 +43,8 @@ class ValidatorTest {
         }
     }
 
-    @ParameterizedTest
+    @DisplayName("Should throw exception for incorrect make in dto")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: {1}")
     @ArgumentsSource(TestMakeDataSet.class)
     void shouldThrowExceptionForMake(String argument, boolean expectedResult){
         if (expectedResult){
@@ -55,7 +60,8 @@ class ValidatorTest {
         }
     }
 
-    @ParameterizedTest
+    @DisplayName("Should throw exception for incorrect registration number in dto")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: {1}")
     @ArgumentsSource(TestRegistrationDataSet.class)
     void shouldThrowExceptionForRegistration(String argument, boolean expectedResult){
         if (expectedResult){
@@ -71,7 +77,8 @@ class ValidatorTest {
         }
     }
 
-    @ParameterizedTest
+    @DisplayName("Should throw exception for incorrect production year in dto")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: {1}")
     @ArgumentsSource(TestYearDataSet.class)
     void shouldThrowExceptionForProductionYear(int argument, boolean expectedResult){
         if (expectedResult){
@@ -86,6 +93,10 @@ class ValidatorTest {
             }).isInstanceOf(ValidationException.class);
         }
     }
+
+
+
+
 
 
     static class TestModelDataSet implements ArgumentsProvider {
@@ -128,6 +139,7 @@ class ValidatorTest {
                     expectedResult
             );
         }
+
     }
 
     static class TestMakeDataSet implements ArgumentsProvider {

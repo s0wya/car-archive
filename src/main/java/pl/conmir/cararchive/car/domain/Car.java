@@ -50,7 +50,7 @@ public class Car {
     private OriginalFile originalFile;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name="modifiedFile_id")
+    @JoinColumn(name="car_id")
     private Set<ModificationFile> modificationFiles;
 
     public void changeRegistration(RegistrationNumber registrationNumber){

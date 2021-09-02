@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import pl.conmir.cararchive.originalFile.dto.OriginalFileResponse;
 
 @Getter
 @Builder
