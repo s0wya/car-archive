@@ -5,16 +5,14 @@ import lombok.Getter;
 @Getter
 public class ResourseNotFoundException extends RuntimeException{
 
-    private final int errorCode;
+    private final int HTTP_ERROR_CODE = 404;
 
-    public ResourseNotFoundException(int erroCode, String message) {
+    public ResourseNotFoundException(String message) {
         super(message);
-        this.errorCode = erroCode;
     }
 
-    public ResourseNotFoundException(int errorCode, String message, Throwable cause) {
+    public ResourseNotFoundException(String message, Throwable cause) {
         super(message, cause);
-        this.errorCode = errorCode;
     }
 
 }

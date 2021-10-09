@@ -5,16 +5,14 @@ import lombok.Getter;
 @Getter
 public class FileStorageException extends RuntimeException{
 
-    private final int errorCode;
+    private final int HTTP_ERROR_CODE = 500;
 
-    public FileStorageException(int errorCode, String message) {
+    public FileStorageException(String message) {
         super(message);
-        this.errorCode = errorCode;
     }
 
-    public FileStorageException(int errorCode, String message, Throwable cause) {
+    public FileStorageException(String message, Throwable cause) {
        super(message, cause);
-        this.errorCode = errorCode;
     }
 
 }

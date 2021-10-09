@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.conmir.cararchive.car.CarResponse;
-import pl.conmir.cararchive.car.dto.CreateCarDto;
-import pl.conmir.cararchive.car.dto.UpdateCarDto;
-import pl.conmir.cararchive.car.service.CarCommandService;
-import pl.conmir.cararchive.car.service.CarQueryService;
+import pl.conmir.cararchive.dto.GetCarDto;
+import pl.conmir.cararchive.dto.CreateCarDto;
+import pl.conmir.cararchive.dto.GetPerformanceDto;
+import pl.conmir.cararchive.dto.UpdateCarDto;
+import pl.conmir.cararchive.api.CarCommandService;
+import pl.conmir.cararchive.api.CarQueryService;
 
 @RequiredArgsConstructor
 @RestController
@@ -51,7 +52,7 @@ public class CarController {
     }
 
     @GetMapping("/{carId}")
-    public ResponseEntity<CarResponse> getCar(@PathVariable Long carId){
+    public ResponseEntity<GetCarDto> getCar(@PathVariable Long carId){
         var car = carQueryService.findCarById(carId);
 
         return ResponseEntity.ok()
@@ -90,7 +91,7 @@ public class CarController {
     }
 
     @PostMapping("/{carId}/original-file/upload")
-    public ResponseEntity<?> uploadOriginalFile(@PathVariable Long carId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadOriginalFile(@PathVariable Long carId, @RequestPart("file") MultipartFile file) {
         carCommandService.setOriginalFile(carId, file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -118,6 +119,13 @@ public class CarController {
                 .body(
                         new ByteArrayResource(file.getData())
                 );
+    }
+
+    @GetMapping("/{carId}/performance")
+    public ResponseEntity<GetPerformanceDto> getPerformance(@PathVariable Long carId){
+        var performance = carQueryService.findCarPerformance(carId);
+
+        return ResponseEntity.ok(performance);
     }
 
 
