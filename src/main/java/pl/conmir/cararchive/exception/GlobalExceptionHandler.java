@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return ResponseEntity
-                .status(errorCode)
-                .body(error);
+                .status(exception.getHttpErrorCode())
+                .body(errors);
     }
 
     @ExceptionHandler(ResourseNotFoundException.class)
