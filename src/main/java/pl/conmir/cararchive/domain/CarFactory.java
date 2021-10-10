@@ -16,7 +16,6 @@ public class CarFactory {
     public Car create(Make make, Model model, ProductionYear productionYear, RegistrationNumber registrationNumber,
                       MultipartFile originalFile, List<MultipartFile> modificationFiles) {
 
-
         var car = Car.builder()
                 .make(make)
                 .model(model)

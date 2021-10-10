@@ -13,22 +13,11 @@ public class ValidationException extends RuntimeException {
     private final List<ValidationError> errors;
 
     public ValidationException(List<ValidationError> errors) {
-        this.errors= errors;
+        this.errors = errors;
     }
 
     public int getHttpErrorCode(){
         return HTTP_ERROR_CODE;
     }
-//
-//    public List<String> getErrorCode(){
-//        return errors.stream()
-//                .map(ValidationError::getCode)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public List<String> getMessages(){
-//        return errors.stream()
-//                .map(ValidationError::getMessage)
-//                .collect(Collectors.toList());
-//    }
+
 }
