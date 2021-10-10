@@ -19,6 +19,11 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static pl.conmir.cararchive.api.validator.MakeValidator.Error.MAKE_BLANK;
+import static pl.conmir.cararchive.api.validator.MakeValidator.Error.MAKE_WHITESPACES;
+import static pl.conmir.cararchive.api.validator.ModelValidator.Error.MODEL_BLANK;
+import static pl.conmir.cararchive.api.validator.RegistrationNumberValidator.Error.REGISTRATION_NUMBER_INCORRECT_FORMAT;
+import static pl.conmir.cararchive.api.validator.YearValidator.Error.YEAR_INCORRECT_FORMAT;
 
 class CarValidatorTest {
 
@@ -31,231 +36,71 @@ class CarValidatorTest {
 
 
     @DisplayName("Should throw exception for incorrect model in dto")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
-    @ArgumentsSource(TestModelDataSet.class)
-    void shouldThrowExceptionForModel(String argument, boolean expectedResult, List<ValidationException> expectedErrorCode) {
-        if (expectedResult) {
-            var toTest = createCarDtoWithModel(argument);
-            assertThatCode(() -> {
-                carValidator.validate(toTest);
-            }).doesNotThrowAnyException();
-        } else {
-            assertThatThrownBy(() -> {
-                var toTest = createCarDtoWithModel(argument);
-                carValidator.validate(toTest);
-            }).isInstanceOf(ValidationException.class)
-                    .extracting("errors",  InstanceOfAssertFactories.ITERABLE)
-                    .containsAll(expectedErrorCode);
-        }
-    }
-
-    @DisplayName("Should throw exception for incorrect make in dto")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
-    @ArgumentsSource(TestMakeDataSet.class)
-    void shouldThrowExceptionForMake(String argument, boolean expectedResult, List<ValidationException> expectedErrorCode) {
-        if (expectedResult) {
-            var toTest = createCarDtoWithMake(argument);
-            assertThatCode(() -> {
-                carValidator.validate(toTest);
-            }).doesNotThrowAnyException();
-        } else {
-            var thrownException = assertThatThrownBy(() -> {
-                var toTest = createCarDtoWithMake(argument);
-                carValidator.validate(toTest);
-            }).isInstanceOf(ValidationException.class)
-                    .extracting("errors",  InstanceOfAssertFactories.ITERABLE)
-                    .containsAll(expectedErrorCode);
-
-
-        }
-    }
-
-
-    @DisplayName("Should throw exception for incorrect registration number in dto")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
-    @ArgumentsSource(TestRegistrationDataSet.class)
-    void shouldThrowExceptionForRegistration(String argument, boolean expectedResult, List<ValidationError> expectedErrorCode) {
-        if (expectedResult) {
-            var toTest = createCarDtoWithRegistration(argument);
-            assertThatCode(() -> {
-                carValidator.validate(toTest);
-            }).doesNotThrowAnyException();
-        } else {
-            assertThatThrownBy(() -> {
-                var toTest = createCarDtoWithRegistration(argument);
-                carValidator.validate(toTest);
-            }).isInstanceOf(ValidationException.class)
-                    .extracting("errors",  InstanceOfAssertFactories.ITERABLE)
-                    .containsAll(expectedErrorCode);
-        }
-    }
-
-    @DisplayName("Should throw exception for incorrect production year in dto")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
+    @ParameterizedTest(name = "{index} -> For model:\"{0}\", make:\"{1}\", registration:\"{2}\", year:\"{3}\" " +
+            "---> EXPECTED ERRORS: {4}")
     @ArgumentsSource(TestYearDataSet.class)
-    void shouldThrowExceptionForProductionYear(int argument, boolean expectedResult, List<ValidationError> expectedErrorCode) {
-        if (expectedResult) {
-            var toTest = createCarDtoWithYear(argument);
+    void shouldThrowExceptionForModel(String modelArgument, String makeArgument, String registrationArgument,
+                                      int yearArgument, List<ValidationError> expectedError) {
+        if (expectedError.isEmpty()) {
+            var toTest = createCarDto(modelArgument, makeArgument, registrationArgument, yearArgument);
             assertThatCode(() -> {
                 carValidator.validate(toTest);
             }).doesNotThrowAnyException();
         } else {
             assertThatThrownBy(() -> {
-                var toTest = createCarDtoWithYear(argument);
+                var toTest = createCarDto(modelArgument, makeArgument, registrationArgument, yearArgument);
                 carValidator.validate(toTest);
             }).isInstanceOf(ValidationException.class)
                     .extracting("errors",  InstanceOfAssertFactories.ITERABLE)
-                    .containsExactlyElementsOf(expectedErrorCode);
-
-        }
-    }
-
-    static class TestModelDataSet implements ArgumentsProvider {
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError MODEL_BLANK = ModelValidator.Error.MODEL_BLANK;
-        private static final ValidationError MODEL_WHITESPACES = ModelValidator.Error.MODEL_WHITESPACES;
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(
-                    caseWith("", INVALID, List.of(MODEL_BLANK)),
-                    caseWith(" ", INVALID, List.of(MODEL_BLANK)),
-                    caseWith("a di", INVALID, List.of(MODEL_WHITESPACES)),
-                    caseWith(" udi", INVALID, List.of(MODEL_WHITESPACES)),
-                    caseWith("aud ", INVALID, List.of(MODEL_WHITESPACES)),
-                    caseWith("audi", VALID, List.of())
-            );
-        }
-
-        private Arguments caseWith (String argument, boolean expectedResult, List<ValidationError> expectedError) {
-            return Arguments.of(
-                    argument,
-                    expectedResult,
-                    expectedError
-
-            );
-        }
-    }
-
-    static class TestMakeDataSet implements ArgumentsProvider {
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError MAKE_BLANK = MakeValidator.Error.MAKE_BLANK;
-        private static final ValidationError MAKE_WHITESPACES = MakeValidator.Error.MAKE_WHITESPACES;
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(
-                    caseWith("", INVALID, List.of(MAKE_BLANK)),
-                    caseWith(" ", INVALID, List.of(MAKE_BLANK)),
-                    caseWith("a di", INVALID, List.of(MAKE_WHITESPACES)),
-                    caseWith(" udi", INVALID, List.of(MAKE_WHITESPACES)),
-                    caseWith("aud ", INVALID, List.of(MAKE_WHITESPACES)),
-                    caseWith("audi", VALID, List.of())
-            );
-        }
-
-        private Arguments caseWith (String argument, boolean expectedResult, List<ValidationError> expectedError) {
-            return Arguments.of(
-                    argument,
-                    expectedResult,
-                    expectedError
-
-            );
-        }
-    }
-
-    static class TestRegistrationDataSet implements ArgumentsProvider {
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError REGISTRATION_NUMBER_BLANK = RegistrationNumberValidator.Error.REGISTRATION_NUMBER_BLANK;
-        private static final ValidationError REGISTRATION_NUMBER_WHITESPACES = RegistrationNumberValidator.Error.REGISTRATION_NUMBER_WHITESPACES;
-        private static final ValidationError REGISTRATION_NUMBER_INCORRECT_FORMAT = RegistrationNumberValidator.Error.REGISTRATION_NUMBER_INCORRECT_FORMAT;
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-            return Stream.of(
-                    caseWith("", INVALID, List.of(REGISTRATION_NUMBER_BLANK, REGISTRATION_NUMBER_INCORRECT_FORMAT)),
-                    caseWith("      ", INVALID, List.of(REGISTRATION_NUMBER_WHITESPACES, REGISTRATION_NUMBER_INCORRECT_FORMAT, REGISTRATION_NUMBER_BLANK)),
-                    caseWith("12 124 ", INVALID, List.of(REGISTRATION_NUMBER_WHITESPACES)),
-                    caseWith(" 124f s", INVALID, List.of(REGISTRATION_NUMBER_WHITESPACES)),
-                    caseWith("123fsf32d", INVALID, List.of(REGISTRATION_NUMBER_INCORRECT_FORMAT)),
-                    caseWith("123fd", INVALID, List.of(REGISTRATION_NUMBER_INCORRECT_FORMAT)),
-                    caseWith("fawvwg3", VALID, List.of())
-            );
-        }
-
-        private Arguments caseWith (String argument, boolean expectedResult, List<ValidationError> expectedErrors) {
-            return Arguments.of(
-                    argument,
-                    expectedResult,
-                    expectedErrors
-
-            );
+                    .containsAll(expectedError);
         }
     }
 
     static class TestYearDataSet implements ArgumentsProvider {
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError YEAR_INCORRECT_FORMAT = YearValidator.Error.YEAR_INCORRECT_FORMAT;
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    caseWith(123, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(12, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(1, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(12345, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(0, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(1990, VALID, List.of())
+                    caseWith(" ",
+                            " ",
+                            "fasvw342",
+                            111,
+                            List.of(YEAR_INCORRECT_FORMAT, MAKE_BLANK, MODEL_BLANK, REGISTRATION_NUMBER_INCORRECT_FORMAT)
+                    ),
+                    caseWith("fasd",
+                            "ad ud",
+                            "fasvw342",
+                            111,
+                            List.of(YEAR_INCORRECT_FORMAT, MAKE_WHITESPACES, REGISTRATION_NUMBER_INCORRECT_FORMAT)
+                    ),
+                    caseWith("fdasf",
+                            "audi",
+                            "krs31fw",
+                            2010,
+                            List.of()
+                    )
             );
         }
 
-        private Arguments caseWith (int argument, boolean expectedResult, List<ValidationError> expectedError) {
+        private Arguments caseWith (String modelArgument, String makeArgument, String registrationArgument,
+                                    int yearArgument, List<ValidationError> expectedError) {
             return Arguments.of(
-                    argument,
-                    expectedResult,
+                    modelArgument,
+                    makeArgument,
+                    registrationArgument,
+                    yearArgument,
                     expectedError
-
             );
         }
     }
 
-    private CreateCarDto createCarDtoWithModel(String model) {
+    private CreateCarDto createCarDto(String model, String make, String registration, int year) {
         return CreateCarDto.builder()
                 .model(model)
-                .make("make")
-                .registration("133f141")
-                .year(1990)
-                .build();
-    }
-
-    private CreateCarDto createCarDtoWithMake(String make) {
-        return CreateCarDto.builder()
-                .model("model")
                 .make(make)
-                .registration("133f141")
-                .year(1990)
-                .build();
-    }
-
-    private CreateCarDto createCarDtoWithRegistration(String registration) {
-        return CreateCarDto.builder()
-                .model("model")
-                .make("make")
                 .registration(registration)
-                .year(1990)
-                .build();
-    }
-
-    private CreateCarDto createCarDtoWithYear(int year) {
-        return CreateCarDto.builder()
-                .model("model")
-                .make("make")
-                .registration("12f2tsr")
                 .year(year)
                 .build();
     }
+
 }
