@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static pl.conmir.cararchive.api.validator.YearValidator.Error.YEAR_INCORRECT_FORMAT;
 
 class YearValidatorTest {
 
@@ -20,9 +21,9 @@ class YearValidatorTest {
     @DisplayName("Should return error list for incorrect year")
     @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
     @ArgumentsSource(TestSet.class)
-    void shouldValidateYear(int argument, boolean expectedResult, List<ValidationError> expectedErrorCode){
+    void shouldValidateYear(int argument, List<ValidationError> expectedErrorCode){
         var errorList = validator.validate(argument);
-        if (expectedResult){
+        if (expectedErrorCode.isEmpty()){
             assertThat(errorList).isEmpty();
         } else {
             assertThat(errorList)
@@ -34,26 +35,21 @@ class YearValidatorTest {
 
     static class TestSet implements ArgumentsProvider {
 
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError YEAR_INCORRECT_FORMAT = YearValidator.Error.YEAR_INCORRECT_FORMAT;
-
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    caseWith(123, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(12, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(1, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(12345, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(0, INVALID, List.of(YEAR_INCORRECT_FORMAT)),
-                    caseWith(1990, VALID, List.of())
+                    caseWith(123, List.of(YEAR_INCORRECT_FORMAT)),
+                    caseWith(12, List.of(YEAR_INCORRECT_FORMAT)),
+                    caseWith(1, List.of(YEAR_INCORRECT_FORMAT)),
+                    caseWith(12345, List.of(YEAR_INCORRECT_FORMAT)),
+                    caseWith(0, List.of(YEAR_INCORRECT_FORMAT)),
+                    caseWith(1990, List.of())
             );
         }
 
-        private Arguments caseWith (int argument, boolean expectedResult, List<ValidationError> expectedError) {
+        private Arguments caseWith (int argument, List<ValidationError> expectedError) {
             return Arguments.of(
                     argument,
-                    expectedResult,
                     expectedError
 
             );
