@@ -19,7 +19,7 @@ class YearValidatorTest {
     private final static YearValidator validator = new YearValidator();
 
     @DisplayName("Should return error list for incorrect year")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\", error code: \"{1}\" ")
     @ArgumentsSource(TestSet.class)
     void shouldValidateYear(int argument, List<ValidationError> expectedErrorCode){
         var errorList = validator.validate(argument);

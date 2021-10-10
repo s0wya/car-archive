@@ -11,17 +11,18 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.conmir.cararchive.api.validator.RegistrationNumberValidator.Error.*;
 
 class RegistrationNumberValidatorTest {
 
     private final static RegistrationNumberValidator validator = new RegistrationNumberValidator();
 
     @DisplayName("Should return error list for incorrect registration number")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\", error code: \"{1}\" ")
     @ArgumentsSource(TestSet.class)
-    void shouldValidateRegistrationNumber(String argument, boolean expectedResult, List<ValidationError> expectedErrorCode){
+    void shouldValidateRegistrationNumber(String argument, List<ValidationError> expectedErrorCode){
         var errorList = validator.validate(argument);
-        if (expectedResult){
+        if (expectedErrorCode.isEmpty()){
             assertThat(errorList).isEmpty();
         } else {
             assertThat(errorList)
@@ -31,29 +32,23 @@ class RegistrationNumberValidatorTest {
 
     static class TestSet implements ArgumentsProvider {
 
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError REGISTRATION_NUMBER_BLANK = RegistrationNumberValidator.Error.REGISTRATION_NUMBER_BLANK;
-        private static final ValidationError REGISTRATION_NUMBER_WHITESPACES = RegistrationNumberValidator.Error.REGISTRATION_NUMBER_WHITESPACES;
-        private static final ValidationError REGISTRATION_NUMBER_INCORRECT_FORMAT = RegistrationNumberValidator.Error.REGISTRATION_NUMBER_INCORRECT_FORMAT;
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    caseWith("", INVALID, List.of(REGISTRATION_NUMBER_BLANK, REGISTRATION_NUMBER_INCORRECT_FORMAT)),
-                    caseWith("      ", INVALID, List.of(REGISTRATION_NUMBER_WHITESPACES, REGISTRATION_NUMBER_INCORRECT_FORMAT, REGISTRATION_NUMBER_BLANK)),
-                    caseWith("12 124 ", INVALID, List.of(REGISTRATION_NUMBER_WHITESPACES)),
-                    caseWith(" 124f s", INVALID, List.of(REGISTRATION_NUMBER_WHITESPACES)),
-                    caseWith("123fsf32d", INVALID, List.of(REGISTRATION_NUMBER_INCORRECT_FORMAT)),
-                    caseWith("123fd", INVALID, List.of(REGISTRATION_NUMBER_INCORRECT_FORMAT)),
-                    caseWith("fawvwg3", VALID, List.of())
+                    caseWith("", List.of(REGISTRATION_NUMBER_BLANK, REGISTRATION_NUMBER_INCORRECT_FORMAT)),
+                    caseWith("      ", List.of(REGISTRATION_NUMBER_WHITESPACES, REGISTRATION_NUMBER_INCORRECT_FORMAT, REGISTRATION_NUMBER_BLANK)),
+                    caseWith("12 124 ", List.of(REGISTRATION_NUMBER_WHITESPACES)),
+                    caseWith(" 124f s", List.of(REGISTRATION_NUMBER_WHITESPACES)),
+                    caseWith("123fsf32d", List.of(REGISTRATION_NUMBER_INCORRECT_FORMAT)),
+                    caseWith("123fd", List.of(REGISTRATION_NUMBER_INCORRECT_FORMAT)),
+                    caseWith("fawvwg3", List.of())
             );
         }
 
-        private Arguments caseWith (String argument, boolean expectedResult, List<ValidationError> expectedErrors) {
+        private Arguments caseWith (String argument, List<ValidationError> expectedErrors) {
             return Arguments.of(
                     argument,
-                    expectedResult,
                     expectedErrors
 
             );

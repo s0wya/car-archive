@@ -11,17 +11,19 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.conmir.cararchive.api.validator.ModelValidator.Error.MODEL_BLANK;
+import static pl.conmir.cararchive.api.validator.ModelValidator.Error.MODEL_WHITESPACES;
 
 class ModelValidatorTest {
 
     private final static ModelValidator validator = new ModelValidator();
 
     @DisplayName("Should return error list for incorrect model")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\" error code: \"{1}\" ")
     @ArgumentsSource(TestSet.class)
-    void shouldValidateModel(String argument, boolean expectedResult, List<ValidationError> expectedErrorCode){
+    void shouldValidateModel(String argument, List<ValidationError> expectedErrorCode){
         var errorList = validator.validate(argument);
-        if (expectedResult){
+        if (expectedErrorCode.isEmpty()){
             assertThat(errorList).isEmpty();
         } else {
             assertThat(errorList)
@@ -33,27 +35,21 @@ class ModelValidatorTest {
 
     static class TestSet implements ArgumentsProvider {
 
-        private static final boolean VALID = true;
-        private static final boolean INVALID = false;
-        private static final ValidationError MODEL_BLANK = ModelValidator.Error.MODEL_BLANK;
-        private static final ValidationError MODEL_WHITESPACES = ModelValidator.Error.MODEL_WHITESPACES;
-
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
             return Stream.of(
-                    caseWith("", INVALID, List.of(MODEL_BLANK)),
-                    caseWith(" ", INVALID, List.of(MODEL_BLANK)),
-                    caseWith("a di", INVALID, List.of(MODEL_WHITESPACES)),
-                    caseWith(" udi", INVALID, List.of(MODEL_WHITESPACES)),
-                    caseWith("aud ", INVALID, List.of(MODEL_WHITESPACES)),
-                    caseWith("audi", VALID, List.of())
+                    caseWith("", List.of(MODEL_BLANK)),
+                    caseWith(" ", List.of(MODEL_BLANK)),
+                    caseWith("a di", List.of(MODEL_WHITESPACES)),
+                    caseWith(" udi", List.of(MODEL_WHITESPACES)),
+                    caseWith("aud ", List.of(MODEL_WHITESPACES)),
+                    caseWith("audi", List.of())
             );
         }
 
-        private Arguments caseWith (String argument, boolean expectedResult, List<ValidationError> expectedError) {
+        private Arguments caseWith (String argument, List<ValidationError> expectedError) {
             return Arguments.of(
                     argument,
-                    expectedResult,
                     expectedError
 
             );

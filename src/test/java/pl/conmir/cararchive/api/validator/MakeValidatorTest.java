@@ -19,7 +19,7 @@ class MakeValidatorTest {
     private final static MakeValidator validator = new MakeValidator();
 
     @DisplayName("Should return error list for incorrect model")
-    @ParameterizedTest(name = "{index} -> For: \"{0}\" expected result: \"{1}\", error code: \"{2}\" ")
+    @ParameterizedTest(name = "{index} -> For: \"{0}\", error code: \"{1}\" ")
     @ArgumentsSource(TestSet.class)
     void shouldValidateMake(String argument, List<ValidationError> expectedErrorCode){
         var errorList = validator.validate(argument);
