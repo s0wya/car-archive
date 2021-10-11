@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.conmir.cararchive.api.CarCommandService;
+import pl.conmir.cararchive.api.validator.PerformanceModificationValidator;
+import pl.conmir.cararchive.api.validator.PerformanceValidator;
 import pl.conmir.cararchive.domain.*;
 import pl.conmir.cararchive.domain.CarRepository;
 import pl.conmir.cararchive.api.validator.CarValidator;
@@ -25,10 +27,14 @@ import javax.transaction.Transactional;
 public class CarCommandServiceImpl implements CarCommandService {
 
     private final CarRepository repository;
+
     private final CarFactory carFactory;
     private final OriginalFileFactory originalFileFactory;
     private final ModificationFileFactory modificationFileFactory;
+
     private final CarValidator carValidator;
+    private final PerformanceValidator performanceValidator;
+    private final PerformanceModificationValidator performanceModificationValidator;
 
 
 
@@ -48,14 +54,14 @@ public class CarCommandServiceImpl implements CarCommandService {
 
         var performance = request.getPerformance();
         if (doesContainPerformance(performance)) {
-            //TODO: add validation
+            performanceValidator.validate(performance);
             Performance createdPerformance = createPerformance(performance);
             car.setPerformance(createdPerformance);
         }
 
         var performanceModification = request.getPerformanceModification();
         if (doesContainPerformanceModification(performanceModification)) {
-            //TODO: add validation
+            performanceModificationValidator.validate(performanceModification);
             PerformanceModification createdPerformance = createPerformanceModification(performanceModification);
             car.setPerformanceModification(createdPerformance);
         }
