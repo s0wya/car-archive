@@ -16,9 +16,11 @@ import pl.conmir.cararchive.dto.UpdateCarDto;
 import pl.conmir.cararchive.api.CarCommandService;
 import pl.conmir.cararchive.api.CarQueryService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/car")
+@RequestMapping("/api/cars")
 public class CarController {
 
     private final CarCommandService carCommandService;
@@ -124,6 +126,13 @@ public class CarController {
     @GetMapping("/{carId}/performance")
     public ResponseEntity<GetPerformanceDto> getPerformance(@PathVariable Long carId){
         var performance = carQueryService.findCarPerformance(carId);
+
+        return ResponseEntity.ok(performance);
+    }
+
+    @GetMapping("/registration")
+    public ResponseEntity<List<GetCarDto>> getByRegistration(@RequestParam String value){
+        var performance = carQueryService.findCarByRegistration(value);
 
         return ResponseEntity.ok(performance);
     }

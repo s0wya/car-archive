@@ -16,6 +16,7 @@ import pl.conmir.cararchive.exception.ResourseNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -59,12 +60,14 @@ public class CarQueryServiceImpl implements CarQueryService {
     }
 
     @Override
-    public GetCarDto findCarByRegistration(String registration) {
-        return repository.findByRegistration_Value(registration)
+    public List<GetCarDto> findCarByRegistration(String registration) {
+        return repository.findByRegistration_ValueContaining(registration)
+                .stream()
                 .map(CarMapper::toCarResponse)
-                .orElseThrow(() -> {
-                    throw new ResourseNotFoundException("There is no car for registration number: " + registration);
-                });
+                .collect(Collectors.toList());
+
+
+
     }
 
     @Override
